@@ -1,5 +1,5 @@
 ﻿{
-	"version": 1717951480,
+	"version": 1718442865,
 	"fileList": [
 		"data.js",
 		"c2runtime.js",
@@ -351,6 +351,8 @@
 		"images/soundbutton-sheet0.png",
 		"images/soundbutton-sheet1.png",
 		"images/starthelp-sheet0.png",
+		"images/char_download-sheet0.png",
+		"images/finished_s-sheet0.png",
 		"media/playful-140946.ogg",
 		"media/flashbang-sound-effect-made-with-voicemod.ogg",
 		"media/stage2.ogg",
