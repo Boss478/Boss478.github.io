@@ -1,1 +1,101 @@
-<h1>Hello World!</h1>
+<!DOCTYPE html>
+<html lang="thai">
+
+<head>
+    <title>The Letter to you</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Boss478">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Bai Jamjuree", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-gray-900">
+    <header class="bg-pink-100 dark:bg-pink-700 text-black dark:text-white shadow-lg shadow-pink-200 mb-5">
+        <div class="container mx-auto flex justify-between items-center py-4 px-6">
+            <div class="text-2xl font-bold">
+                
+            </div>
+            <nav class="hidden md:flex space-x-4">
+                <a href="#" class="mx-5 hover:text-gray-200"><i class='bx bx-home-heart text-2xl' ></i></a>
+                <a href="#" class="mx-5 hover:text-gray-200"><i class='bx bx-images text-2xl' ></i></a>
+                <button id="theme-toggle" class="focus:outline-none">
+                    <box-icon name='moon' id="moon" class="mx-5 hidden dark:block" color="yellow" size="sm"></box-icon>
+                    <box-icon name='sun' id="sun" class="mx-5 block dark:hidden" color="orange" size="sm"></box-icon>
+                </button>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <nav id="mobile-menu" class="md:hidden bg-white shadow-md hidden">
+            <a href="#" class="block py-2 px-4 hover:bg-pink-400 hover:text-white"><box-icon name='home-heart' color="black" size="sm"></box-icon> Home</a>
+            <a href="#" class="block py-2 px-4 hover:bg-pink-400 hover:text-white"><box-icon name='images' color="black" size="sm"></box-icon></a>
+            
+        </nav>
+    </header>
+    <h1 class="text-3xl font-bold dark:text-white">
+        Hello world!
+    </h1>
+
+</body>
+
+<script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+<script>
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        }
+        updateIcon();
+    });
+
+    function updateIcon() {
+        const moonIcon = themeToggle.getElementById("moon");
+        const sunIcon = themeToggle.getElementById("sun");
+        if (document.documentElement.classList.contains('dark')) {
+            moonIcon.classList.add('hidden');
+            sunIcon.classList.remove('hidden');
+        } else {
+            moonIcon.classList.remove('hidden');
+            sunIcon.classList.add('hidden');
+        }
+    }
+
+    // Update the icon based on the initial theme
+    updateIcon();
+</script>
+
+</html>
