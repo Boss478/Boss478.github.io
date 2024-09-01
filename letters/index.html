@@ -31,8 +31,8 @@
                 
             </div>
             <nav class="hidden md:flex space-x-4">
-                <a href="#" class="mx-5 hover:text-gray-200"><i class="fi fi-rr-house-chimney-heart text-2xl"></i></a>
-                <a href="#" class="mx-5 hover:text-gray-200"><i class="fi fi-rr-picture text-2xl"></i></a>
+                <!--a href="#" class="mx-5 hover:text-gray-200"><i class="fi fi-rr-house-chimney-heart text-2xl"></i></!--a-->
+                <!--a href="#" class="mx-5 hover:text-gray-200"><i class="fi fi-rr-picture text-2xl"></i></!--a-->
                 <button id="theme-toggle" class="focus:outline-none">
                     <box-icon name='moon' id="moon" class="mx-5 hidden dark:block" color="yellow" size="sm"></box-icon>
                     <box-icon name='sun' id="sun" class="mx-5 block dark:hidden" color="orange" size="sm"></box-icon>
@@ -46,10 +46,13 @@
                 </button>
             </div>
         </div>
-        <nav id="mobile-menu" class="md:hidden bg-white shadow-md hidden">
-            <a href="#" class="block py-2 px-4 hover:bg-pink-400 hover:text-white"><i class="fi fi-rr-house-chimney-heart text-2xl"></i> Home</a>
-            <a href="#" class="block py-2 px-4 hover:bg-pink-400 hover:text-white"><i class="fi fi-rr-picture text-2xl"></i></a>
-            
+        <nav id="mobile-menu" class="md:hidden bg-white dark:bg-black shadow-md hidden">
+            <!--a href="#" class="block py-2 px-4 text-black hover:bg-pink-400 hover:text-white"><i class="fi fi-rr-house-chimney-heart text-2xl"></i></!--a-->
+            <!--a href="#" class="block py-2 px-4 text-black hover:bg-pink-400 hover:text-white"><i class="fi fi-rr-picture text-2xl"></i></!--a-->
+            <button id="theme-toggle" class="focus:outline-none">
+                <box-icon name='moon' id="moon" class="mx-5 hidden dark:block" color="yellow" size="sm"></box-icon>
+                <box-icon name='sun' id="sun" class="mx-5 block dark:hidden" color="orange" size="sm"></box-icon>
+            </button>
         </nav>
     </header>
     
@@ -62,16 +65,61 @@
             </div>
             <div class="text-center mt-5 p-5">
                 <p class="text-md font-semibold text-pink-600 dark:text-pink-400">❤️ ขอบคุณสำหรับทุกความทรงจำน้า ทั้งที่ดีและไม่ดีเลย 😊</p>
-                <p class="text-md font-semibold text-pink-600 dark:text-pink-400">รักเธอที่สุดนะ จับมือกันไปแบบนี้ตลอดนะ 💙</p>
+                <p class="text-md font-semibold text-pink-600 dark:text-pink-400">รักเธอที่สุดนะ จับมือกันไปแบบนี้ตลอดนะ ขอบคุณที่ไม่ทิ้งกัน 💙</p>
+                <p class="text-md font-semibold text-pink-600 dark:text-pink-400">ขอโทษสำหรับทุกเรื่องที่ทำให้ยูไม่พอใจ หรือ เสียใจ ที่ไอดื้อไป งี่เง่าไป หรือทำอะไรผิดไป</p>
+                <p class="text-lg font-bold text-pink-700 dark:text-pink-300">🩵 ขอบคุณมาก ๆ เลยครับ ❤️</p>
             </div>
         </div>
     </section>
 
+    <section id="photobooth" class="mx-3 mb-20 mt-10 text-black dark:text-white">
+        <div class="container mx-auto">
+            <p class="text-center text-lg font-bold text-pink-600">Collection</p>
+            <div class="relative w-full h-96 overflow-hidden rounded-lg transform transition-transform duration-300 ease-in-out hover:scale-125">
+                <img id="photobooth-image" src="assets/photobooth/Photobooth-00_Aug.jpg" class="absolute inset-0 w-full h-full object-contain cursor-pointer" alt="Photo Booth">
+            </div>
+        </div>
+        <hr class="mt-20">
+    </section>
+    
+    <section id="favorite" class="mx-3 mb-10 mt-10 text-black dark:text-white">
+        <div class="container mx-auto">
+            <div class="relative w-full h-96 overflow-hidden rounded-lg ">
+                <img id="photobooth-image" src="assets/favorite/best.jpg" class="absolute inset-0 w-full h-full object-contain cursor-pointer" alt="Best">
+            </div>
+            <p class="text-center text-lg font-bold text-pink-600 dark:text-pink-300">You're the best for me :)</p>
+        </div>
+    </section>
+    
+    <!-- Modal for Full-Size Image -->
+    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-75 flex items-center justify-center">
+        <span class="absolute top-5 right-5 text-white text-4xl cursor-pointer" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" class="max-w-full max-h-full">
+    </div>
 </body>
 
 <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone.min.js"></script>
+
+<script>
+    // Get the elements
+    const photoboothImage = document.getElementById('photobooth-image');
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+
+    // When the image is clicked, open the modal and show the full-size image
+    photoboothImage.onclick = function() {
+        modalImage.src = this.src;  // Set the modal image to the clicked image's src
+        modal.classList.remove('hidden');  // Show the modal
+    }
+
+    // Close the modal
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+</script>
+
 <script>
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -173,6 +221,30 @@
 
     // Update time difference every second
     setInterval(() => calculateTimeDifference(timeZone), 1000);
+
+    const images = [
+        'assets/photobooth/Photobooth-00_Aug.jpg',
+        'assets/photobooth/Photobooth-01_Sep.JPG',
+        'assets/photobooth/Photobooth-03_Nov.JPG',
+        'assets/photobooth/Photobooth-04_Dec.JPG',
+        'assets/photobooth/Photobooth-06_Feb1.JPG',
+        'assets/photobooth/Photobooth-06_Feb2.JPG',
+        'assets/photobooth/Photobooth-07_Mar1.JPG',
+        'assets/photobooth/Photobooth-07_Mar2.JPG',
+        'assets/photobooth/Photobooth-08_Apr.JPG',
+        'assets/photobooth/Photobooth-10_Jun.JPG',
+        
+    ];
+
+    let currentIndex = 0;
+
+    function shuffleImages() {
+        currentIndex = (currentIndex + 1) % images.length;
+        document.getElementById('photobooth-image').src = images[currentIndex];
+    }
+
+    // Shuffle every 10 seconds
+    setInterval(shuffleImages, 10000);
 </script>
 
 </html>
