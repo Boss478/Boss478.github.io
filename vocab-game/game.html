@@ -156,6 +156,7 @@ async function changeQuestion() {
             const definitionToUse = validDefinitions[index % validDefinitions.length]; // Cycle through valid definitions
             button.textContent = definitionToUse;
             button.dataset.definition = definitionToUse;  // Store the definition in a custom data attribute
+            button.classList.remove('btn-success', 'btn-danger'); // Reset button classes
         });
     } catch (error) {
         console.error('Error fetching words or definitions:', error);
@@ -171,14 +172,28 @@ buttons.forEach(button => {
             timerValue += 5;
             timerProgressValue += 2.5;
             barProgress.style.width = `${(timerValue * 100) / timerProgressValue}%`;
+            button.classList.add('btn-success');
         } else {
             timerValue -= 10;
             barProgress.style.width = `${(timerValue * 100) / timerProgressValue}%`;
+            button.classList.add('btn-danger');
         }
-        await changeQuestion();
+
+        // Highlight the correct answer
+        buttons.forEach(btn => {
+            if (btn.textContent.toString().trim() === definition.toString().trim()) {
+                btn.classList.add('btn-success');
+            } else {
+                btn.classList.add('btn-danger');
+            }
+        });
+
+        // Wait for a short period before changing the question
+        setTimeout(async () => {
+            await changeQuestion();
+        }, 1000);
     });
 });
-
 
   </script>
 </html>
