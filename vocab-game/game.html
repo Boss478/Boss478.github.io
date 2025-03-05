@@ -152,6 +152,7 @@ async function changeQuestion() {
         // Ensure there are always 4 answer options, fill any missing buttons with valid definitions
         const buttons = document.querySelectorAll('#answer button');
         buttons.forEach((button, index) => {
+            button.disabled = false; 
             // If we have fewer valid definitions than buttons, repeat definitions or fill with random valid ones
             const definitionToUse = validDefinitions[index % validDefinitions.length]; // Cycle through valid definitions
             button.textContent = definitionToUse;
@@ -166,21 +167,23 @@ async function changeQuestion() {
 const buttons = document.querySelectorAll('#answer button');
 buttons.forEach(button => {
     button.addEventListener('click', async () => {
+        button.disabled = true;
         // Check if the clicked button's text matches the correct definition
         let definition = await getDefinition(question_vocabulary);
         if (button.textContent.toString().trim() === definition.toString().trim()) {
-            timerValue += 5;
+            timerValue += 8;
             timerProgressValue += 2.5;
             barProgress.style.width = `${(timerValue * 100) / timerProgressValue}%`;
             button.classList.add('btn-success');
         } else {
-            timerValue -= 10;
+            timerValue -= 7;
             barProgress.style.width = `${(timerValue * 100) / timerProgressValue}%`;
             button.classList.add('btn-danger');
         }
 
         // Highlight the correct answer
         buttons.forEach(btn => {
+            btn.disabled = true;
             if (btn.textContent.toString().trim() === definition.toString().trim()) {
                 btn.classList.add('btn-success');
             } else {
