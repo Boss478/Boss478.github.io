@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.9.2/dist/paper.min.css" />
+    <title>Definition Game</title>
+  </head>
+
+
+  <body>
+    <div class="padding-top-large">
+      <div class="paper container text-center">
+        <h1 class=""><u>Definition Game</u></h1>
+        <p>How much do you know about vocabulary?</p>
+        <button class="btn-small btn-muted" 
+          popover-top="The game is under development!">0.1.3 [INDEV]</button>
+        <div class="padding-top-small">
+          <button id="start-button" class="btn-large btn-success">START</button>
+          <p class="text-muted" 
+            popover-top="Starts with 60 seconds. Answer correct: +5 seconds, -10 seconds when incorrect! Be careful">
+            * Default mode *</p>
+        </div>
+        <div>
+          <!--button class=""></!--button-->
+        </div>
+      </div>
+    </div>
+    <div class="padding-large text-center">
+      <p>
+        This game is still under development. If you encounter any bugs or have suggestions, please let us know! <br>
+        Feel free to play ^.^
+      </p>
+      <p>This game is created with <a href="https://www.getpapercss.com/" target="_BLANK">PaperCSS</a> and 
+        <a href="https://www.flaticon.com/uicons" target="_BLANK">Flaticon</a>.</p>
+    </div>
+  </body>
+
+  <script>
+    const startBtn = document.getElementById('start-button');
+
+    startBtn.addEventListener('click', () => {
+      window.location.href = 'game.html';
+    });
+
+  </script>
+
+</html>

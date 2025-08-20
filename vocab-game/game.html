@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.9.2/dist/paper.min.css" />
+    <title>Definition Game</title>
+    <style>
+        .fixed-width-button {
+            width: 100%; /* Ensure the buttons fill the column width */
+            height: 100%; /* Ensure the buttons stretch to the full height of the column */
+            min-height: 100px; /* Set a minimum height, adjust this as needed */
+            padding: 10px; /* Add padding to the buttons */
+            text-align: center; /* Center text */
+            box-sizing: border-box; /* Ensure padding doesn't affect width/height */
+            overflow-wrap: break-word;
+        }
+        .answer-col {
+            padding: 5px;
+        }
+    </style>
+  </head>
+
+
+  <body>
+    <div class="padding-top-large">
+      <div class="paper container text-center">
+        <button id="timer" class="btn-large">60 seconds</button>
+        <div id="timer-bar" class="progress margin-bottom margin-top">
+            <div id="timer-bar-content" class="bar striped secondary w-100"></div>
+        </div>
+        <div class="margin-top-small">
+            <div id="vocabulary">
+                <h2 style="overflow-wrap: break-word;">Start</h2>
+            </div>
+            <div id="answer" class="row">
+                <div class="lg-6 md-6 sm-6 xs-12 col answer-col">
+                    <button id="answer-A" class="fixed-width-button">
+                        The beginning of an activity.
+                    </button>
+                </div>
+                <div class="lg-6 md-6 sm-6 xs-12 col answer-col">
+                    <button id="answer-B" class="fixed-width-button">
+                        The beginning of an activity.
+                    </button>
+                </div>
+                <div class="lg-6 md-6 sm-6 xs-12 col answer-col">
+                    <button id="answer-C" class="fixed-width-button">
+                        The beginning of an activity.
+                    </button>
+                </div>
+                <div class="lg-6 md-6 sm-6 xs-12 col answer-col">
+                    <button id="answer-D" class="fixed-width-button">
+                        The beginning of an activity.
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="padding-large text-center">
+      <p>
+        This game is still under development. If you encounter any bugs or have suggestions, please let us know! <br>
+        Feel free to play ^.^
+      </p>
+      <p>This game is created with <a href="https://www.getpapercss.com/" target="_BLANK">PaperCSS</a> and 
+        <a href="https://www.flaticon.com/uicons" target="_BLANK">Flaticon</a>.</p>
+    </div>
+  </body>
+
+  <script>
+    let timerValue = 60;
+    const maxTimeValue = 60;
+    let timerProgressValue = 60;
+    const timerButton = document.getElementById('timer');
+    const barProgress = document.getElementById('timer-bar-content');
+
+    function updateTimer() {
+        timerValue -= 0.3;
+        const roundedTimerValue = Math.ceil(timerValue);
+        timerButton.textContent = `${roundedTimerValue} ${roundedTimerValue === 1 ? 'second' : 'seconds'}`;
+        barProgress.style.width = `${(timerValue * 100) / timerProgressValue}%`;
+
+        if (roundedTimerValue <= 10) {
+            timerButton.classList.add('btn-danger');
+            barProgress.classList.add('danger');
+        } else {
+            timerButton.classList.remove('btn-danger');
+            barProgress.classList.remove('danger');
+        }
+
+        if (timerValue <= 0) {
+            window.location.href = 'index.html'; // Redirect to index page
+        }
+
+        if (timerProgressValue > 60) {
+            timerProgressValue -= 0.2;
+        } else {
+            timerProgressValue += 0.1;
+        }
+    }
+
+    setInterval(updateTimer, 300);
+
+const vocabulary = document.getElementById('vocabulary');
+let question_vocabulary = 'Start';
+vocabulary.innerHTML = `<h2>${question_vocabulary}</h2>`;
+
+async function getDefinition(question) {
+    try {
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${question}`);
+        if (!response.ok) {
+            throw new Error('Definition not found');
+        }
+        const data = await response.json();
+        const definition = data[0].meanings[0].definitions[0].definition;
+        return definition;
+    } catch (error) {
+        console.error(`Definition not found for word: ${question}`, error);
+        return null; // Return null if no definition is found
+    }
+}
+
+async function changeQuestion() {
+    try {
+        // Fetch random words
+        const response = await fetch('https://random-word-api.vercel.app/api?words=4');
+        const words = await response.json();
+
+        // Fetch definitions for all the words
+        const definitionPromises = words.map(word => getDefinition(word));
+        const definitions = await Promise.all(definitionPromises);
+
+        // Filter out words that failed to get definitions
+        const validWords = words.filter((word, index) => definitions[index] !== null);
+        const validDefinitions = definitions.filter(def => def !== null);
+
+        if (validWords.length === 0) {
+            // If no valid words are found, retry
+            console.error('No valid words found. Retrying...');
+            await changeQuestion();
+            return;
+        }
+
+        // Randomly pick a correct answer from the valid words
+        const correctAnswerIndex = Math.floor(Math.random() * validWords.length);
+        question_vocabulary = validWords[correctAnswerIndex];
+        vocabulary.innerHTML = `<h2>${question_vocabulary}</h2>`;
+
+        // Ensure there are always 4 answer options, fill any missing buttons with valid definitions
+        const buttons = document.querySelectorAll('#answer button');
+        buttons.forEach((button, index) => {
+            button.disabled = false; 
+            // If we have fewer valid definitions than buttons, repeat definitions or fill with random valid ones
+            const definitionToUse = validDefinitions[index % validDefinitions.length]; // Cycle through valid definitions
+            button.textContent = definitionToUse;
+            button.dataset.definition = definitionToUse;  // Store the definition in a custom data attribute
+            button.classList.remove('btn-success', 'btn-danger'); // Reset button classes
+        });
+    } catch (error) {
+        console.error('Error fetching words or definitions:', error);
+    }
+}
+
+const buttons = document.querySelectorAll('#answer button');
+buttons.forEach(button => {
+    button.addEventListener('click', async () => {
+        button.disabled = true;
+        // Check if the clicked button's text matches the correct definition
+        let definition = await getDefinition(question_vocabulary);
+        if (button.textContent.toString().trim() === definition.toString().trim()) {
+            timerValue += 8;
+            timerProgressValue += 2.5;
+            barProgress.style.width = `${(timerValue * 100) / timerProgressValue}%`;
+            button.classList.add('btn-success');
+        } else {
+            timerValue -= 7;
+            barProgress.style.width = `${(timerValue * 100) / timerProgressValue}%`;
+            button.classList.add('btn-danger');
+        }
+
+        // Highlight the correct answer
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            if (btn.textContent.toString().trim() === definition.toString().trim()) {
+                btn.classList.add('btn-success');
+            } else {
+                btn.classList.add('btn-danger');
+            }
+        });
+
+        // Wait for a short period before changing the question
+        setTimeout(async () => {
+            await changeQuestion();
+        }, 1000);
+    });
+});
+
+  </script>
+</html>
