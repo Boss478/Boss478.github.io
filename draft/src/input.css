@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --blur-2xs: 3px;
+  --blur-3xs: 2.5px;
+  --blur-4xs: 2px;
+  --blur-5xs: 1.5px;
+  --blur-6xs: 1px;
+  --blur-7xs: 0.5px;
+}

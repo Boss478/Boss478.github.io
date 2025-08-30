@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoring Website</title>
+    <link rel="stylesheet" href="./src/css/output.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+</head>
+
+<style>
+    body {
+        font-family: "Kanit", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+</style>
+
+<body class="bg-sky-50">
+    <!-- Header -->
+    <header class="text-gray-700 bg-sky-300/80 py-4 shadow-md sticky top-0 z-50 backdrop-blur-5xs border-white/20 transition-colors duration-500">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center">
+            
+            <!-- Logo Left -->
+            <h1 class="text-2xl font-bold">
+                <a href="#"> {Company} </a>
+            </h1>
+
+            <!-- Right Side Menu -->
+            <div class="flex items-center">
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex items-center sm:text-xs lg:text-sm">
+                <ul class="flex space-x-0.5">
+                    <li><a href="#" class="px-3 py-2 rounded-full border border-white/0 hover:border-white/30 hover:backdrop-blur-md hover:bg-white/60 transition duration-300 ease-in-out hover:text-gray-800 flex items-center"><i class="fi fi-sr-book-open-cover mr-1"></i> คอร์ส</a></li>
+                    <li><a href="#" class="px-3 py-2 rounded-full border border-white/0 hover:border-white/30 hover:backdrop-blur-md hover:bg-white/60 transition duration-300 ease-in-out hover:text-gray-800 flex items-center"><i class="fi fi-sr-home mr-1"></i> หน้าแรก</a></li>
+                    <li><a href="#" class="px-3 py-2 rounded-full border border-white/0 hover:border-white/30 hover:backdrop-blur-md hover:bg-white/60 transition duration-300 ease-in-out hover:text-gray-800 flex items-center"><i class="fi fi-sr-info mr-1"></i> วิธีการใช้งาน</a></li>
+                    <li><a href="#" class="px-3 py-2 rounded-full border border-white/0 hover:border-white/30 hover:backdrop-blur-md hover:bg-white/60 transition duration-300 ease-in-out hover:text-gray-800 flex items-center"><i class="fi fi-sr-phone-flip mr-1"></i> ติดต่อเรา</a></li>
+                </ul>
+                <a href="#" id="signin-btn" class="text-center inline-flex items-center bg-amber-500 text-white px-4 py-2 rounded-full font-medium border border-white/30 shadow-md backdrop-blur-sm hover:shadow-lg transition duration-300 ml-6 hover:bg-amber-400">
+                    <i class="fi fi-sr-key mr-2"></i> เข้าสู่ระบบ / สมัครสมาชิก
+                </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="menu-toggle" class="md:hidden focus:outline-none ml-6">
+                <i class="fi fi-sr-menu-burger text-2xl"></i>
+                </button>
+            </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="mx-4 px-4 py-3 space-y-4 bg-white/20 backdrop-blur-sm border border-white/30 shadow-xl mt-2 rounded-2xl">
+                <!-- Changed to grid with 2 columns -->
+                <ul class="grid grid-cols-2 gap-2">
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-full border border-white/30 backdrop-blur-lg bg-white/20 hover:bg-white/70 transition duration-300 ease-in-out hover:text-gray-800 hover:-translate-y-0.5 hover:shadow-lg">
+                        <i class="fi fi-sr-home mr-2"></i> หน้าแรก
+                    </a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-full border border-white/30 backdrop-blur-lg bg-white/20 hover:bg-white/70 transition duration-300 ease-in-out hover:text-gray-800 hover:-translate-y-0.5 hover:shadow-lg">
+                        <i class="fi fi-sr-book-open-cover mr-2"></i> คอร์ส
+                    </a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-full border border-white/30 backdrop-blur-lg bg-white/20 hover:bg-white/70 transition duration-300 ease-in-out hover:text-gray-800 hover:-translate-y-0.5 hover:shadow-lg">
+                        <i class="fi fi-sr-info mr-2"></i> วิธีการใช้งาน
+                    </a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-full border border-white/30 backdrop-blur-lg bg-white/20 hover:bg-white/70 transition duration-300 ease-in-out hover:text-gray-800 hover:-translate-y-0.5 hover:shadow-lg">
+                        <i class="fi fi-sr-phone-flip mr-2"></i> ติดต่อเรา
+                    </a></li>
+                </ul>
+                <div class="pt-4 border-t border-white/30">
+                    <a href="#" class="w-full text-center bg-amber-500 text-white px-4 py-2 rounded-full font-bold border border-white/30 shadow-md backdrop-blur-sm hover:bg-amber-400 transition duration-300 flex items-center justify-center hover:-translate-y-0.5">
+                        <i class="fi fi-sr-key mr-2"></i> เข้าสู่ระบบ / สมัครสมาชิก
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <section class="min-h-[70vh] grid place-items-center relative py-10">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img 
+                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                alt="Background" 
+                class="w-full h-full object-cover"
+            >
+        </div>
+
+        <!-- Content -->
+        <div class="gap-6 text-center px-4 md:px-6 lg:px-8 relative z-10 cursor-default">
+            <h2 class="my-3 text-3xl sm:text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                {Company}
+            </h2>
+            <p class="my-3 text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto drop-shadow">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+            <div class="bg-white/10 border border-white/30 rounded-2xl md:rounded-full p-4 shadow-lg backdrop-blur-2xs inline-block">
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                    <a href="#" class="text-center inline-flex items-center text-white px-4 py-2 rounded-full font-medium border border-white/20 shadow-lg backdrop-blur-sm hover:shadow-xl transition hover:bg-white/40 ease-in-out duration-300 bg-white/15">
+                        <i class="fi fi-sr-book-open-cover"></i>
+                        <span class="ml-2 text-sm">ดูคอร์สทั้งหมด</span>
+                    </a>
+                    <a href="#" class="text-center inline-flex items-center text-white px-4 py-2 rounded-full font-medium border border-white/20 shadow-lg backdrop-blur-sm hover:shadow-xl transition hover:bg-white/40 ease-in-out duration-300 bg-white/15">
+                        <i class="fi fi-sr-user"></i>
+                        <span class="ml-2 text-sm">สมัครสมาชิก / เข้าสู่ระบบ</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="min-h-[50vh] grid place-items-center py-10 cursor-default">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left px-4 md:px-6 lg:px-8">
+            <!-- Image Content -->
+            <div class="mx-4 order-1 md:order-2">
+                <div class="bg-white/40 border border-white/50 rounded-2xl shadow-lg backdrop-blur-sm hover:shadow-xl hover:bg-white/50 transition-all duration-300 hover:scale-105 ease-in-out">
+                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                        alt="Tutoring" 
+                        class="w-full h-auto rounded-xl shadow-md">
+                </div>
+            </div>
+
+            <!-- Text Content -->
+            <div class="mx-4 flex flex-col justify-center space-y-4 order-2 md:order-1">
+                <div class="bg-white/40 border border-white/50 rounded-2xl p-10 shadow-lg backdrop-blur-sm hover:shadow-xl hover:bg-white/50 transition-all duration-300 hover:scale-105 ease-in-out">
+                    <h2 class="py-0.5 text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800/90">
+                        {Company}
+                    </h2>
+                    <p class="py-0.5 text-base md:text-md lg:text-lg text-gray-600/90">
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloremque tempora accusantium voluptates, rerum eaque ab earum at fugiat, odio animi veritatis officiis maiores, reprehenderit modi labore sapiente? Voluptates, eius facilis..
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi voluptates alias ex exercitationem similique reiciendis quisquam quidem quas. Amet, illum voluptatum. Optio aliquam voluptatem ipsum odio sed debitis perspiciatis sunt!
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, hic recusandae voluptates iusto ut alias vitae necessitatibus, ea enim facilis odit. Maiores dolorem, iste modi in est beatae exercitationem nesciunt.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="border-gray-300 my-5 mx-4 sm:mx-6 lg:mx-8">
+
+    <!-- Course List -->
+    <section id="course" class="max-w-6xl mx-auto px-4 lg:px-6 py-10 cursor-default">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">คอร์สแนะนำ</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Course Card -->
+            <div class="m-3 bg-white/10 border border-white/70 rounded-2xl shadow-md backdrop-blur-md hover:shadow-xl hover:bg-white/30 hover:scale-105 transition-all ease-in-out duration-300">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                    alt="Course 2" 
+                    class="w-full h-48 object-cover rounded-t-2xl group-hover:opacity-90 transition-opacity duration-300">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800/90 mb-1">Example #1</h3>
+                    <p class="text-sm text-gray-700/70 hover:text-gray-700/90 mb-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium, rerum harum atque dolorem voluptates voluptate totam inventore sunt vitae neque? Molestiae officia reprehenderit libero deserunt adipisci nesciunt, rerum blanditiis repellat?.</p>
+                    <div class="flex flex-row justify-start space-x-3 mb-3">
+                        <!-- Price Display -->
+                        <div class="flex flex-col items-center bg-white/20 text-gray-800/80 text-center px-3 py-2 border border-white/70 rounded-2xl shadow-md backdrop-blur-none hover:shadow-lg hover:bg-white/70 hover:text-gray-800/90 transition-all duration-150">
+                            <i class="fi fi-sr-usd-circle text-xl mb-0.5"></i>
+                            <p class="text-lg font-bold">{Price}</p>
+                            <p class="text-xs">บาท</p>
+                        </div>
+                        
+                        <!-- Duration Display -->
+                        <div class="flex flex-col items-center bg-white/20 text-gray-800/80 text-center px-3 py-2 border border-white/70 rounded-2xl shadow-md backdrop-blur-none hover:shadow-lg hover:bg-white/70 hover:text-gray-800/90 transition-all duration-150">
+                            <i class="fi fi-sr-time-quarter-past text-xl mb-0.5"></i>
+                            <p class="text-lg font-bold">{Time}</p>
+                            <p class="text-xs">ชั่วโมง</p>
+                        </div>
+                    </div>
+                    <a href="#" class="inline-flex items-center bg-sky-200/70 text-gray-800 px-5 py-2 rounded-full font-medium border border-white/30 shadow-md backdrop-blur-sm hover:shadow-lg hover:bg-sky-400/80 transition-all duration-200">
+                        <span>เข้าสู่คอร์ส</span>
+                        <i class="fi fi-sr-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            
+        </div>
+
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-sky-300 text-gray-700/80 py-4">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-sm hover:text-black">&copy; 2025 {Company}. All rights reserved.</p>
+            <div class="flex space-x-4 mt-2 md:mt-0">
+                <div class="text-sm hover:text-black transition duration-300">
+                    Uicons by <a href="https://www.flaticon.com/uicons" class="hover:underline">Flaticon</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-4 right-4 bg-white/10 border border-white/40 text-gray-700 rounded-full p-3 shadow-lg backdrop-blur-xs hover:bg-white/30 hover:scale-110 transition-all duration-300 opacity-0 invisible">
+        <i class="fi fi-sr-arrow-up text-xl"></i>
+    </button>
+</body>
+
+<script>
+
+    // Simple mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mainMenu = document.getElementById('main-menu');
+    menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+    // Hide mobile menu on resize to desktop
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) { 
+            mobileMenu.classList.add('hidden');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const header = document.querySelector('header');
+        const signinBtn = document.getElementById('signin-btn');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 0) {
+                header.classList.add('bg-sky-50/10');
+                header.classList.remove('bg-sky-300/80');
+                signinBtn.classList.add('bg-amber-500/70');
+                signinBtn.classList.remove('bg-amber-500');
+            } else {
+                header.classList.add('bg-sky-300/80');
+                header.classList.remove('bg-sky-50/10');
+                signinBtn.classList.add('bg-amber-500');
+                signinBtn.classList.remove('bg-amber-500/70');
+            }
+        });
+
+        // Back to Top button functionality
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100');
+            } else {
+                backToTopButton.classList.add('opacity-0');
+                backToTopButton.classList.remove('opacity-100');
+                setTimeout(() => {
+                    if (window.scrollY <= 300) {
+                        backToTopButton.classList.add('invisible');
+                    }
+                }, 300);
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+</html>
