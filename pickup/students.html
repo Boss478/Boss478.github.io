@@ -180,7 +180,16 @@
         // Load data from Google Sheets
         async function loadSharedData() {
             try {
-                const response = await fetch(`${SHEET_URL}?action=read&t=${Date.now()}`);
+                // Add cache-busting parameter and callback
+                const timestamp = Date.now();
+                const response = await fetch(`${SHEET_URL}?action=read&t=${timestamp}&callback=callback`, {
+                    method: 'GET',
+                    mode: 'cors', // Enable CORS
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
                 if (!response.ok) throw new Error('Network response was not ok');
                 
                 const data = await response.json();
@@ -215,8 +224,10 @@
                 
                 const response = await fetch(SHEET_URL, {
                     method: 'POST',
+                    mode: 'cors', // Enable CORS
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         action: 'write',
