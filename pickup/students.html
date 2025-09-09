@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKUIDS Student Pickup System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Google Sheets API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .status-pending { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+        .status-found { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+        .status-not-found { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+        .status-picked-up { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); }
+        .shadow-r { box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Header -->
+    <div class="bg-white shadow-lg border-b-4 border-blue-500">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <img 
+                        src="https://itals.kku.ac.th/ups/myfile/688cfc7018bfe.png" 
+                        alt="School Logo" 
+                        class="h-16 w-16 object-contain"
+                        onerror="this.style.display='none'; console.log('Logo failed to load');"
+                    >
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">KKUIDS Student Pickup System</h1>
+                        <p class="text-gray-600 mt-1">Real-time coordination for daily student pickup (Monday - Friday)</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">Current Date</div>
+                    <div id="currentDate" class="text-lg font-semibold text-gray-800"></div>
+                    <div id="currentTime" class="text-sm text-gray-600"></div>
+                    <div class="flex items-center justify-end gap-2 mt-2">
+                        <div id="syncStatus" class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-xs text-gray-500">Real-time Sync</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Gate Input Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-4 border-blue-500">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">1</span>
+                Enter student name for pick-up
+            </h2>
+            <div class="flex gap-4">
+                <input 
+                    type="text" 
+                    id="studentName" 
+                    placeholder="Enter student name..."
+                    class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-lg"
+                >
+                <button 
+                    onclick="addStudent()"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+                >
+                    Add Student
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Legend -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Status Legend</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded status-pending"></div>
+                    <span class="text-sm">Pending Check</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded status-found"></div>
+                    <span class="text-sm">Found</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded status-not-found"></div>
+                    <span class="text-sm">Not Found</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded status-picked-up"></div>
+                    <span class="text-sm">Picked Up</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Coordination Table -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-gray-50 px-6 py-4 border-b">
+                <h2 class="text-xl font-bold text-gray-800">Real-time Coordination Dashboard</h2>
+            </div>
+            
+            <!-- Table Header -->
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 sticky left-0 bg-gray-100 z-10 shadow-r min-w-[150px]">Student Name</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 min-w-[100px]">Time Added</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-[100px]">Lobby</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-[100px]">Playground</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-[100px]">Futsal Court</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-[100px]">Library</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-[100px]">Canteen</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-[100px]">Other area</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 min-w-[100px]">Gate Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTable">
+                        <tr>
+                            <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                                No students added yet. Enter a student name above to begin coordination.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-2xl font-bold text-blue-600" id="totalStudents">0</div>
+                <div class="text-sm text-gray-600">Total Students</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-2xl font-bold text-yellow-600" id="pendingChecks">0</div>
+                <div class="text-sm text-gray-600">Pending Checks</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-2xl font-bold text-green-600" id="studentsFound">0</div>
+                <div class="text-sm text-gray-600">Students Found</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-2xl font-bold text-purple-600" id="studentsPickedUp">0</div>
+                <div class="text-sm text-gray-600">Picked Up</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Shared data storage using a simple in-memory simulation
+        // In a real implementation, this would use a backend database
+        let students = [];
+        let studentIdCounter = 1;
+        let lastResetDate = null;
+
+        // Location names
+        const locations = ['lobby', 'playground', 'futsal', 'library', 'canteen', 'other'];
+        const locationNames = {
+            lobby: 'Lobby',
+            playground: 'Playground', 
+            futsal: 'Futsal Court',
+            library: 'Library',
+            canteen: 'Canteen',
+            other: 'Other area'
+        };
+
+        // Shared storage key for cross-device synchronization
+        const STORAGE_KEY = 'kkuids_pickup_system_shared';
+        const RESET_KEY = 'kkuids_last_reset_date';
+
+        // Replace the storage constants
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzWPJFUczqMrVg3_A0Mz8tMmLVF1kspMZTVXtOvjqFJ7-kZ0fQ6Rh86lU0moP_quWDc/exec';
+    
+        // Load data from Google Sheets
+        async function loadSharedData() {
+            try {
+                const response = await fetch(`${SHEET_URL}?action=read&t=${Date.now()}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+                
+                if (data.students) {
+                    const dataChanged = JSON.stringify(students) !== JSON.stringify(data.students);
+                    if (dataChanged) {
+                        students = data.students || [];
+                        studentIdCounter = data.counter || 1;
+                        renderTable();
+                        updateStatistics();
+                    }
+                }
+                
+                document.getElementById('syncStatus').className = 'w-3 h-3 rounded-full bg-green-500';
+            } catch (error) {
+                console.error('Error loading shared data:', error);
+                document.getElementById('syncStatus').className = 'w-3 h-3 rounded-full bg-red-500';
+                showNotification('Failed to load data: ' + error.message, 'error');
+            }
+        }
+
+        // Save data to Google Sheets
+        async function saveSharedData() {
+            try {
+                const dataToSave = {
+                    students: students,
+                    counter: studentIdCounter,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                const response = await fetch(SHEET_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'write',
+                        data: dataToSave
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                const result = await response.json();
+                
+                if (!result.success) throw new Error('Failed to save data');
+                document.getElementById('syncStatus').className = 'w-3 h-3 rounded-full bg-green-500';
+            } catch (error) {
+                console.error('Error saving shared data:', error);
+                document.getElementById('syncStatus').className = 'w-3 h-3 rounded-full bg-red-500';
+                showNotification('Failed to sync data: ' + error.message, 'error');
+            }
+        }
+
+        // Initialize the system
+        function init() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            // Check for midnight reset every 30 seconds
+            checkForMidnightReset();
+            setInterval(checkForMidnightReset, 30000);
+            
+            // Initial data load
+            loadSharedData();
+            
+            // Set up periodic sync every 5 seconds
+            setInterval(loadSharedData, 5000);
+            
+            renderTable();
+            updateStatistics();
+        }
+
+        // Update date and time display
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US');
+        }
+
+        // Check for midnight reset (00:01 AM)
+        async function checkForMidnightReset() {
+            const now = new Date();
+            const today = now.toDateString();
+            const currentTime = now.getHours() * 60 + now.getMinutes(); // Minutes since midnight
+            
+            // Reset at 00:01 AM (1 minute after midnight)
+            if (currentTime === 1) {
+                console.log('Performing midnight reset...');
+                students = [];
+                studentIdCounter = 1;
+                
+                await saveSharedData();
+                renderTable();
+                updateStatistics();
+                
+                showNotification('System reset for new day!', 'info');
+            }
+        }
+
+        // Add new student
+        function addStudent() {
+            const nameInput = document.getElementById('studentName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showNotification('Please enter a student name', 'error');
+                return;
+            }
+
+            const student = {
+                id: studentIdCounter++,
+                name: name,
+                timestamp: new Date().toLocaleTimeString('en-US'),
+                status: {
+                    lobby: 'pending',
+                    playground: 'pending',
+                    futsal: 'pending',
+                    library: 'pending',
+                    canteen: 'pending',
+                    other: 'pending'
+                },
+                pickedUp: false,
+                foundAt: null
+            };
+
+            students.unshift(student); // Add to beginning of array
+            nameInput.value = '';
+            saveSharedData();
+            renderTable();
+            updateStatistics();
+            showNotification(`${name} added to pickup list`, 'success');
+        }
+
+        // Update location status
+        function updateLocationStatus(studentId, location, status) {
+            const student = students.find(s => s.id === studentId);
+            if (student && !student.pickedUp) {
+                student.status[location] = status;
+                if (status === 'found') {
+                    student.foundAt = location;
+                    showNotification(`${student.name} found at ${locationNames[location]}`, 'success');
+                }
+                saveSharedData();
+                renderTable();
+                updateStatistics();
+            }
+        }
+
+        // Mark student as picked up
+        function markPickedUp(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (student) {
+                student.pickedUp = true;
+                saveSharedData();
+                renderTable();
+                updateStatistics();
+                showNotification(`${student.name} has been picked up`, 'success');
+            }
+        }
+
+        // Render the main table
+        function renderTable() {
+            const tbody = document.getElementById('studentsTable');
+            
+            if (students.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                            No students added yet. Enter a student name above to begin coordination.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = students.map(student => {
+                const rowClass = student.pickedUp ? 'bg-purple-50' : 
+                                student.foundAt ? 'bg-green-50' : 'bg-white';
+                
+                return `
+                    <tr class="${rowClass} border-b hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-4 sticky left-0 ${rowClass} z-10 shadow-r">
+                            <div class="font-semibold text-gray-800">${student.name}</div>
+                            ${student.foundAt ? `<div class="text-xs text-green-600">Found at ${locationNames[student.foundAt]}</div>` : ''}
+                        </td>
+                        <td class="px-4 py-4 text-sm text-gray-600">${student.timestamp}</td>
+                        ${locations.map(location => `
+                            <td class="px-4 py-4 text-center">
+                                ${renderLocationButtons(student, location)}
+                            </td>
+                        `).join('')}
+                        <td class="px-4 py-4 text-center">
+                            ${renderPickupButton(student)}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render location status buttons
+        function renderLocationButtons(student, location) {
+            if (student.pickedUp) {
+                return '<span class="text-xs text-gray-400">Complete</span>';
+            }
+
+            const status = student.status[location];
+            const isDisabled = student.foundAt && student.foundAt !== location;
+            
+            if (status === 'pending') {
+                return `
+                    <div class="flex gap-1 justify-center">
+                        <button 
+                            onclick="updateLocationStatus(${student.id}, '${location}', 'found')"
+                            class="px-2 py-1 text-xs bg-green-500 hover:bg-green-600 text-white rounded transition-colors ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}"
+                            ${isDisabled ? 'disabled' : ''}
+                        >
+                            Found
+                        </button>
+                        <button 
+                            onclick="updateLocationStatus(${student.id}, '${location}', 'not-found')"
+                            class="px-2 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded transition-colors"
+                        >
+                            Not Found
+                        </button>
+                    </div>
+                `;
+            } else if (status === 'found') {
+                return '<div class="w-4 h-4 rounded status-found mx-auto"></div>';
+            } else {
+                return '<div class="w-4 h-4 rounded status-not-found mx-auto"></div>';
+            }
+        }
+
+        // Render pickup button
+        function renderPickupButton(student) {
+            if (student.pickedUp) {
+                return '<div class="w-4 h-4 rounded status-picked-up mx-auto"></div>';
+            } else if (student.foundAt) {
+                return `
+                    <button 
+                        onclick="markPickedUp(${student.id})"
+                        class="px-3 py-1 text-xs bg-purple-500 hover:bg-purple-600 text-white rounded transition-colors pulse-animation"
+                    >
+                        Picked Up
+                    </button>
+                `;
+            } else {
+                return '<span class="text-xs text-gray-400">Waiting</span>';
+            }
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const total = students.length;
+            const pickedUp = students.filter(s => s.pickedUp).length;
+            const found = students.filter(s => s.foundAt && !s.pickedUp).length;
+            const pending = students.filter(s => !s.foundAt && !s.pickedUp).length;
+
+            document.getElementById('totalStudents').textContent = total;
+            document.getElementById('pendingChecks').textContent = pending;
+            document.getElementById('studentsFound').textContent = found;
+            document.getElementById('studentsPickedUp').textContent = pickedUp;
+        }
+
+        // Show notification to user
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
+            
+            // Set color based on type
+            switch(type) {
+                case 'success':
+                    notification.className += ' bg-green-500';
+                    break;
+                case 'error':
+                    notification.className += ' bg-red-500';
+                    break;
+                case 'info':
+                default:
+                    notification.className += ' bg-blue-500';
+                    break;
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Handle Enter key in input
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('studentName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addStudent();
+                }
+            });
+        });
+
+        // Initialize the system when page loads
+        init();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c5e1e3455e7b42',t:'MTc1NzQxMjQ4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
