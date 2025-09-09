@@ -175,25 +175,38 @@
         const RESET_KEY = 'kkuids_last_reset_date';
 
         // Replace the storage constants
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzWPJFUczqMrVg3_A0Mz8tMmLVF1kspMZTVXtOvjqFJ7-kZ0fQ6Rh86lU0moP_quWDc/exec';
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwyJjv8GAHY8-qnVL_z2KNhKuOiThLPUymolrTn-k1Xmt-lqfVlnv2Ilcn-HafjSPqN/exec';
     
         // Load data from Google Sheets
         async function loadSharedData() {
             try {
-                const timestamp = Date.now();
-                const response = await fetch(`${SHEET_URL}?action=read&t=${timestamp}`, {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                // Create a Promise to handle JSONP
+                const jsonpPromise = new Promise((resolve, reject) => {
+                    const timestamp = Date.now();
+                    const callbackName = 'jsonpCallback_' + timestamp;
+                    
+                    // Create callback function
+                    window[callbackName] = function(data) {
+                        delete window[callbackName];
+                        document.head.removeChild(script);
+                        resolve(data);
+                    };
+                    
+                    // Create script element
+                    const script = document.createElement('script');
+                    script.src = `${SHEET_URL}?action=read&callback=${callbackName}&t=${timestamp}`;
+                    script.onerror = () => {
+                        delete window[callbackName];
+                        document.head.removeChild(script);
+                        reject(new Error('Failed to load data'));
+                    };
+                    
+                    document.head.appendChild(script);
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                // Wait for JSONP response
+                const data = await jsonpPromise;
                 
-                const data = await response.json();
                 if (data.error) throw new Error(data.error);
                 
                 if (data.students) {
