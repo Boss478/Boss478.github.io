@@ -180,46 +180,45 @@
         // Load data from Google Sheets
         async function loadSharedData() {
             try {
-                const timestamp = Date.now();
-                const callbackName = 'jsonpCallback_' + timestamp;
+                // Create unique callback name
+                const callbackName = 'jsonpCallback' + Date.now();
                 
-                const jsonpPromise = new Promise((resolve, reject) => {
-                    // Create callback function
-                    window[callbackName] = function(data) {
-                        delete window[callbackName];
-                        if (script && script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
-                        resolve(data);
+                // Create promise to handle JSONP
+                const data = await new Promise((resolve, reject) => {
+                    // Create global callback function
+                    window[callbackName] = function(response) {
+                        cleanup();
+                        resolve(response);
                     };
                     
                     // Create script element
                     const script = document.createElement('script');
-                    script.src = `${SHEET_URL}?action=read&callback=${callbackName}&t=${timestamp}`;
+                    script.src = `${SHEET_URL}?callback=${callbackName}&t=${Date.now()}`;
+                    
+                    // Handle errors
                     script.onerror = () => {
-                        delete window[callbackName];
-                        if (script.parentNode) {
-                            script.parentNode.removeChild(script);
-                        }
+                        cleanup();
                         reject(new Error('Failed to load data'));
                     };
                     
                     // Add timeout
-                    setTimeout(() => {
-                        if (window[callbackName]) {
-                            delete window[callbackName];
-                            if (script.parentNode) {
-                                script.parentNode.removeChild(script);
-                            }
-                            reject(new Error('Request timeout'));
-                        }
-                    }, 10000); // 10 second timeout
-            
+                    const timeout = setTimeout(() => {
+                        cleanup();
+                        reject(new Error('Request timed out'));
+                    }, 5000);
+                    
+                    // Cleanup function
+                    function cleanup() {
+                        clearTimeout(timeout);
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                    }
+                    
+                    // Add script to document
                     document.head.appendChild(script);
                 });
         
-                const data = await jsonpPromise;
-        
+                // Handle the response
                 if (!data.success) {
                     throw new Error(data.error || 'Unknown error occurred');
                 }
@@ -251,25 +250,61 @@
                     lastUpdated: new Date().toISOString()
                 };
                 
-                const response = await fetch(SHEET_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
+                // Create unique callback name
+                const callbackName = 'jsonpCallback' + Date.now();
+                
+                // Create promise to handle JSONP
+                const result = await new Promise((resolve, reject) => {
+                    // Create global callback function
+                    window[callbackName] = function(response) {
+                        cleanup();
+                        resolve(response);
+                    };
+                    
+                    // Create form element for POST data
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = SHEET_URL + '?callback=' + callbackName;
+                    form.target = 'submitFrame';
+                    
+                    // Add hidden input for data
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'data';
+                    input.value = JSON.stringify({
                         action: 'write',
                         data: dataToSave
-                    })
+                    });
+                    form.appendChild(input);
+                    
+                    // Create hidden iframe for form submission
+                    const iframe = document.createElement('iframe');
+                    iframe.name = 'submitFrame';
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                    
+                    // Handle timeout
+                    const timeout = setTimeout(() => {
+                        cleanup();
+                        reject(new Error('Request timed out'));
+                    }, 5000);
+                    
+                    // Cleanup function
+                    function cleanup() {
+                        clearTimeout(timeout);
+                        document.body.removeChild(iframe);
+                        document.body.removeChild(form);
+                        delete window[callbackName];
+                    }
+                    
+                    // Submit form
+                    document.body.appendChild(form);
+                    form.submit();
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to save data');
                 }
-                
-                const result = await response.json();
-                if (!result.success) throw new Error('Failed to save data');
                 
                 document.getElementById('syncStatus').className = 'w-3 h-3 rounded-full bg-green-500';
             } catch (error) {
