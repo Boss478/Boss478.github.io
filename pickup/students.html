@@ -180,15 +180,16 @@
         // Load data from Google Sheets
         async function loadSharedData() {
             try {
-                // Create a Promise to handle JSONP
+                const timestamp = Date.now();
+                const callbackName = 'jsonpCallback_' + timestamp;
+                
                 const jsonpPromise = new Promise((resolve, reject) => {
-                    const timestamp = Date.now();
-                    const callbackName = 'jsonpCallback_' + timestamp;
-                    
                     // Create callback function
                     window[callbackName] = function(data) {
                         delete window[callbackName];
-                        document.head.removeChild(script);
+                        if (script && script.parentNode) {
+                            script.parentNode.removeChild(script);
+                        }
                         resolve(data);
                     };
                     
@@ -197,18 +198,32 @@
                     script.src = `${SHEET_URL}?action=read&callback=${callbackName}&t=${timestamp}`;
                     script.onerror = () => {
                         delete window[callbackName];
-                        document.head.removeChild(script);
+                        if (script.parentNode) {
+                            script.parentNode.removeChild(script);
+                        }
                         reject(new Error('Failed to load data'));
                     };
                     
+                    // Add timeout
+                    setTimeout(() => {
+                        if (window[callbackName]) {
+                            delete window[callbackName];
+                            if (script.parentNode) {
+                                script.parentNode.removeChild(script);
+                            }
+                            reject(new Error('Request timeout'));
+                        }
+                    }, 10000); // 10 second timeout
+            
                     document.head.appendChild(script);
                 });
-                
-                // Wait for JSONP response
+        
                 const data = await jsonpPromise;
-                
-                if (data.error) throw new Error(data.error);
-                
+        
+                if (!data.success) {
+                    throw new Error(data.error || 'Unknown error occurred');
+                }
+        
                 if (data.students) {
                     const dataChanged = JSON.stringify(students) !== JSON.stringify(data.students);
                     if (dataChanged) {
@@ -218,7 +233,7 @@
                         updateStatistics();
                     }
                 }
-                
+        
                 document.getElementById('syncStatus').className = 'w-3 h-3 rounded-full bg-green-500';
             } catch (error) {
                 console.error('Error loading shared data:', error);
