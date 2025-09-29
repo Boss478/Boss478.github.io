@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{Company}</title>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="./src/css/output.css" as="style">
+    <link rel="preload" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css" as="style">
+    
+    <!-- Optimize font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./src/css/output.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+
+    <style>
+        body {
+            font-family: "Kanit", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+</head>
+
+<body class="bg-sky-50">
+    <!-- Components containers -->
+    <div id="header-container"></div>
+    
+    <!-- Breadcrumb Section -->
+    <section id="breadcrumb-section" class="relative w-full h-40 p-10 mx-auto px-2 lg:px-4 py-4 cursor-default overflow-hidden">
+        <!-- Background -->
+        <div class="absolute inset-0 z-0">
+            <img 
+                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                alt="Background" 
+                class="w-full h-full object-cover object-center"
+            >
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav id="breadcrumb-nav" class="mt-20 relative z-10 flex text-gray-600 text-sm" aria-label="Breadcrumb">
+            <ol class="flex items-center ml-5 xl:ml-15 px-5 py-3 border border-white/40 rounded-full bg-white/40 shadow-lg backdrop-blur-sm
+                hover:bg-white/85 hover:shadow-xl transition duration-300">
+                <li class="inline-flex items-center">
+                    <a href="index.html" class="inline-flex items-center text-gray-500 hover:text-gray-900 hover:underline">
+                        <i class="fi fi-sr-home mr-1"></i> หน้าแรก
+                    </a>
+                </li>
+                <span class="mx-3">/</span>
+                <li>
+                    <div class="flex items-center">
+                        <a class="text-gray-700 hover:cursor-not-allowed">
+                            <i class="fi fi-sr-book-open-cover mr-1"></i> คอร์สทั้งหมด</a>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+    </section>
+
+    <!-- Course List -->
+    <section id="course" class="max-w-7xl mx-auto px-4 lg:px-6 py-10 cursor-default">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-start">คอร์สทั้งหมด</h2>
+        <hr>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Course Card -->
+            <div class="m-3 bg-white border border-gray-100/80 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 group">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                    alt="Course 2" 
+                    class="w-full h-48 object-cover rounded-t-2xl opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800/90 mb-1">Example #1</h3>
+                    <p class="text-sm text-gray-700/70 hover:text-gray-700/90 mb-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium, rerum harum atque dolorem voluptates voluptate totam inventore sunt vitae neque? Molestiae officia reprehenderit libero deserunt adipisci nesciunt, rerum blanditiis repellat?.</p>
+                    <div class="justify-start space-x-3 mb-3">
+                        <!-- Price Display -->
+                        <div class="my-1 w-full items-start bg-gray-200/80 hover:bg-gray-200 text-gray-800/80 text-start px-4 py-3 border border-white/70 rounded-3xl hover:text-gray-800/90 transition-all duration-150">
+                            <i class="fi fi-sr-usd-circle text-xl px-2"></i>
+                            <span class="text-lg font-bold">{Price}</span>
+                            <span class="text-xs">บาท</span>
+                        </div>
+                        
+                        <!-- Duration Display -->
+                        <div class="my-1 w-full items-start bg-gray-200/80 hover:bg-gray-200 text-gray-800/80 text-start px-4 py-3 border border-white/70 rounded-3xl hover:text-gray-800/90 transition-all duration-150">
+                            <i class="fi fi-sr-time-quarter-past text-xl px-2"></i>
+                            <span class="text-lg font-bold">{Time}</span>
+                            <span class="text-xs">ชั่วโมง</span>
+                        </div>
+                    </div>
+                    <a href="#" class="inline-flex items-center bg-sky-400/40 text-gray-800 px-5 py-2 rounded-full font-medium border border-white/30 shadow-md backdrop-blur-sm hover:shadow-lg hover:bg-sky-400/90 hover:text-white transition-all duration-200">
+                        <span>เข้าสู่คอร์ส</span>
+                        <i class="fi fi-sr-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            
+        </div>
+
+
+    </section>
+
+    <!-- Component containers -->
+    <div id="footer"></div>
+    <div id="backtotop-container"></div>
+    <div id="auth-modal-container"></div>
+
+    <!-- Module script for component loading -->
+    <script type="module">
+        import { loadComponents } from './src/js/components.js';
+        
+        // Load components when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadComponents);
+        } else {
+            loadComponents();
+        }
+
+        // Preload components
+        const preloadLinks = ['header.html', 'footer.html', 'backtotop.html', 'sign_in_modal.html'].map(url => {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'fetch';
+            link.href = url;
+            return link;
+        });
+        document.head.append(...preloadLinks);
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!-- Sign In Modal -->
+<div id="auth-modal" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/20 cursor-pointer"></div>
+    
+    <!-- Modal Container -->
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4">
+            <!-- Modal Content -->
+            <div id="modal-content" class="border-white/40 bg-white/80 backdrop-blur-xs rounded-4xl shadow-2xl w-full max-w-md mx-4 px-6 py-4 relative transform transition-all opacity-0 scale-95">
+
+              <h2 class="text-2xl font-bold my-2 text-gray-800/85 cursor-default"><i id="open-auth-modal" class="fi fi-sr-key mr-2"></i>เข้าสู่ระบบ / สมัครสมาชิก</h2>
+              <hr class="text-gray-600/25 mb-5">
+              <button id="close-auth-modal" class="cursor-pointer absolute top-5 right-5 bg-red-500/60 backdrop-blur-3xl hover:bg-red-500/90 text-white w-7 h-7 p-3 rounded-full flex items-center justify-center shadow-md transition-all duration-200 hover:scale-110">
+                <i class="fi fi-sr-cross text-xs"></i>
+              </button>
+              
+              <div id="auth-step-email" class="transition-opacity duration-150">
+                <p class="text-sm text-gray-600 mb-3 cursor-default">กรอกอีเมลของคุณเพื่อดำเนินการต่อ</p>
+                <div id="auth-email-form" class="space-y-4">
+                  <input type="email" id="auth-email" name="auth-email" required 
+                         placeholder="กรอกอีเมลของคุณ..." 
+                         class="w-full px-4 py-2 border border-gray-500/40 bg-gray-50/80 rounded-3xl focus:outline-none focus:ring-2 focus:ring-amber-400" 
+                         autocomplete="email">
+                  <p id="auth-email-warning" class="text-sm text-red-600 -mt-4"></p>
+                  <button id="auth-email-confirm" type="button" class="cursor-pointer w-full bg-amber-500/80 hover:bg-amber-400/90 text-white font-semibold py-2 rounded-3xl transition">
+                    ดำเนินการต่อ
+                  </button>
+                </div>
+              </div>
+              
+              <div id="auth-step-password" class="hidden transition-opacity duration-150 opacity-0">
+                <h2 class="text-xl font-bold mb-2 text-gray-800">ยืนยันรหัสผ่าน</h2>
+                <p class="mb-4 text-gray-500 text-sm">กรอกรหัสผ่านสำหรับ <span id="auth-email-display" class="font-semibold"></span></p>
+                <form id="auth-password-form" class="space-y-4">
+                  <input type="password" id="auth-password" name = "auth-password" required placeholder="รหัสผ่าน" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400" autocomplete="current-password">
+                  <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-white font-semibold py-2 rounded-lg transition">เข้าสู่ระบบ / สมัครสมาชิก</button>
+                </form>
+                <button id="auth-back-email" class="mt-2 text-amber-500 hover:underline text-sm">ย้อนกลับ</button>
+              </div>
+          </div>
+    </div>
