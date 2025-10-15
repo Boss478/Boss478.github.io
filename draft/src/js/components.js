@@ -1,16 +1,20 @@
 export async function loadComponents() {
     // Component loader
     try {
-        // Determine if we're on GitHub Pages or localhost
-        const isGitHubPages = window.location.hostname === 'boss478.github.io';
-        const baseUrl = isGitHubPages ? '/draft' : '';
+        // Get the current URL information
+        const url = new URL(window.location.href);
+        const isGitHubPages = url.hostname === 'boss478.github.io';
         
-        // Get the current directory depth
-        const pathParts = window.location.pathname.split('/').filter(Boolean);
-        const isInSubDirectory = pathParts.length > (isGitHubPages ? 1 : 2);
-        
-        // Adjust path based on current location
-        const componentPath = isInSubDirectory ? '../' : './';
+        // Set the base URL and paths
+        let basePath;
+        if (isGitHubPages) {
+            // On GitHub Pages
+            basePath = '/draft/';
+        } else {
+            // On localhost
+            const localPath = url.pathname.split('/website2/')[0];
+            basePath = `${localPath}/website2/`;
+        }
         
         const responses = await Promise.all([
             fetch(`${baseUrl}${componentPath}header.html`),
