@@ -177,17 +177,19 @@
 <!-- Scripts -->
 <script type="module">
     import { loadComponents } from './src/js/components.js';
-    import { testConnection } from './src/js/database.js';
+    // import { testConnection } from './src/js/database.js';
     
     // Load components and test database connection when DOM is ready
     async function initialize() {
         // Test database connection
+        /*
         const isConnected = await testConnection();
         if (isConnected) {
             console.log('Database connection test successful!');
         } else {
             console.error('Failed to connect to database');
         }
+        */
 
         // Load components
         loadComponents();
