@@ -3,17 +3,9 @@
 <html>
 
 <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://boss478.github.io https://fonts.googleapis.com https://fonts.gstatic.com https://cdn-uicons.flaticon.com https://images.unsplash.com https://avatar.iran.liara.run; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn-uicons.flaticon.com; img-src 'self' data: https: http:; font-src 'self' https://fonts.gstatic.com https://cdn-uicons.flaticon.com; connect-src 'self' https://boss478.github.io">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' https://boss478.github.io;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval';
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn-uicons.flaticon.com;
-        img-src 'self' data: https: http:;
-        font-src 'self' https://fonts.gstatic.com https://cdn-uicons.flaticon.com;
-        connect-src 'self' https://boss478.github.io;
-        frame-src 'self';
-    ">
     <title>{Company}</title>
     
     <!-- Preload critical assets -->
@@ -185,22 +177,10 @@
 <!-- Scripts -->
 <script type="module">
     import { loadComponents } from './src/js/components.js';
-    // import { testConnection } from './src/js/database.js';
     
-    // Load components and test database connection when DOM is ready
+    // Load components when DOM is ready
     async function initialize() {
-        // Test database connection
-        /*
-        const isConnected = await testConnection();
-        if (isConnected) {
-            console.log('Database connection test successful!');
-        } else {
-            console.error('Failed to connect to database');
-        }
-        */
-
-        // Load components
-        loadComponents();
+        await loadComponents();
     }
 
     if (document.readyState === 'loading') {

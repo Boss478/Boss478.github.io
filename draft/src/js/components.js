@@ -1,31 +1,22 @@
-/*
-import mysql from 'mysql2/promise';
-
-// Database connection configuration
-const dbConfig = {
-    host: 'localhost',
-    user: 'boss',
-    password: '',
-    database: 'website_2'
-};
-
-// Create database connection pool
-const pool = mysql.createPool(dbConfig);
-*/
-
 export async function loadComponents() {
     // Component loader
     try {
-        // Get the base URL for GitHub Pages or local development
-        const baseUrl = window.location.hostname === 'boss478.github.io' 
-            ? '/draft'  // GitHub Pages repository name
-            : '';
+        // Determine if we're on GitHub Pages or localhost
+        const isGitHubPages = window.location.hostname === 'boss478.github.io';
+        const baseUrl = isGitHubPages ? '/draft' : '';
+        
+        // Get the current directory depth
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        const isInSubDirectory = pathParts.length > (isGitHubPages ? 1 : 2);
+        
+        // Adjust path based on current location
+        const componentPath = isInSubDirectory ? '../' : './';
         
         const responses = await Promise.all([
-            fetch(`${baseUrl}/header.html`),
-            fetch(`${baseUrl}/footer.html`),
-            fetch(`${baseUrl}/backtotop.html`),
-            fetch(`${baseUrl}/sign_in_modal.html`)
+            fetch(`${baseUrl}${componentPath}header.html`),
+            fetch(`${baseUrl}${componentPath}footer.html`),
+            fetch(`${baseUrl}${componentPath}backtotop.html`),
+            fetch(`${baseUrl}${componentPath}sign_in_modal.html`)
         ]);
 
         const [header, footer, backToTop, signInModal] = await Promise.all(
