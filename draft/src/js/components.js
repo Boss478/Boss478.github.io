@@ -16,11 +16,16 @@ const pool = mysql.createPool(dbConfig);
 export async function loadComponents() {
     // Component loader
     try {
+        // Get the base URL for GitHub Pages or local development
+        const baseUrl = window.location.hostname === 'boss478.github.io' 
+            ? '/draft'  // GitHub Pages repository name
+            : '';
+        
         const responses = await Promise.all([
-            fetch('./header.html'),
-            fetch('./footer.html'),
-            fetch('./backtotop.html'),
-            fetch('./sign_in_modal.html')
+            fetch(`${baseUrl}/header.html`),
+            fetch(`${baseUrl}/footer.html`),
+            fetch(`${baseUrl}/backtotop.html`),
+            fetch(`${baseUrl}/sign_in_modal.html`)
         ]);
 
         const [header, footer, backToTop, signInModal] = await Promise.all(
