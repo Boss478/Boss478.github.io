@@ -5,6 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval';
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn-uicons.flaticon.com;
+        img-src 'self' data: https: http:;
+        font-src 'self' https://fonts.gstatic.com https://cdn-uicons.flaticon.com;
+        connect-src 'self' http://localhost:3000;
+    ">
     <title>{Company}</title>
     
     <!-- Preload critical assets -->
@@ -20,15 +28,14 @@
     <link rel="stylesheet" href="./src/css/output.css">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
 
+    <style>
+        body {
+            font-family: "Kanit", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
 </head>
-
-<style>
-    body {
-        font-family: "Kanit", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-    }
-</style>
 
 <body class="bg-sky-50">
 
