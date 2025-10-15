@@ -17,10 +17,10 @@ export async function loadComponents() {
         }
         
         const responses = await Promise.all([
-            fetch(`${baseUrl}${componentPath}header.html`),
-            fetch(`${baseUrl}${componentPath}footer.html`),
-            fetch(`${baseUrl}${componentPath}backtotop.html`),
-            fetch(`${baseUrl}${componentPath}sign_in_modal.html`)
+            fetch(`${basePath}header.html`),
+            fetch(`${basePath}footer.html`),
+            fetch(`${basePath}backToTop.html`),
+            fetch(`${basePath}sign_in_modal.html`)
         ]);
 
         const [header, footer, backToTop, signInModal] = await Promise.all(
