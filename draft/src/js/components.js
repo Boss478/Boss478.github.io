@@ -140,7 +140,7 @@ export function initSignInModal() {
         }, 10);
     };
 
-    const closeModal = () => {
+    let closeModal = () => {
         modalContent.classList.remove('opacity-100', 'scale-100');
         modalContent.classList.add('opacity-0', 'scale-95');
         email_warning_text.textContent = '';
