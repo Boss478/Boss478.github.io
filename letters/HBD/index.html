@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Itim + Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        itim: ['Itim', 'cursive'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        'cream': '#FFF8F0',
+                        'blush': '#FFE4E6',
+                        'rose': '#FDA4AF',
+                        'coral': '#FB7185',
+                        'deep-rose': '#E11D48',
+                        'slate-dark': '#1E293B',
+                        'slate-mid': '#334155',
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2.5s infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                        'float-delayed': 'float 4s ease-in-out infinite 1s',
+                        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'fade-in-scale': 'fadeInScale 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'door-swing': 'doorSwing 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                        'door-close': 'doorClose 1s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                        'handle-spin': 'handleSpin 0.8s ease-in-out forwards',
+                        'sparkle': 'sparkle 1.5s ease-in-out infinite',
+                        'heart-beat': 'heartBeat 1.2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-20px) rotate(3deg)' },
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+                            '50%': { opacity: '0.8', transform: 'scale(1.02)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeInScale: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        doorSwing: {
+                            '0%': { transform: 'perspective(1200px) rotateY(0deg)' },
+                            '100%': { transform: 'perspective(1200px) rotateY(-105deg)' },
+                        },
+                        doorClose: {
+                            '0%': { transform: 'perspective(1200px) rotateY(-105deg)' },
+                            '100%': { transform: 'perspective(1200px) rotateY(0deg)' },
+                        },
+                        handleSpin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        },
+                        sparkle: {
+                            '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+                            '50%': { opacity: '1', transform: 'scale(1.2)' },
+                        },
+                        heartBeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '14%': { transform: 'scale(1.15)' },
+                            '28%': { transform: 'scale(1)' },
+                            '42%': { transform: 'scale(1.15)' },
+                            '70%': { transform: 'scale(1)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-handwriting {
+            font-family: 'Itim', cursive;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #FDA4AF;
+            border-radius: 10px;
+        }
+
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Safe Door 3D Effect */
+        .safe-door {
+            transform-style: preserve-3d;
+            transform-origin: left center;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .glass-dark {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Item hover effect */
+        .item-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .item-card:hover {
+            transform: translateY(-8px) scale(1.05);
+        }
+
+        .item-card:active {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        /* Video styling */
+        .video-frame {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* Digit flip animation */
+        .digit-box {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .digit-box.flip {
+            transform: scale(1.1);
+        }
+
+        /* Polaroid effect */
+        .polaroid {
+            background: white;
+            padding: 12px 12px 40px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Decorative dots pattern */
+        .dots-pattern {
+            background-image: radial-gradient(circle, #FDA4AF 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Entrance animations */
+        .enter-1 {
+            animation-delay: 0.1s;
+        }
+
+        .enter-2 {
+            animation-delay: 0.2s;
+        }
+
+        .enter-3 {
+            animation-delay: 0.3s;
+        }
+
+        .enter-4 {
+            animation-delay: 0.4s;
+        }
+
+        .enter-5 {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+
+<body class="bg-cream min-h-screen flex flex-col items-center justify-center text-slate-dark overflow-hidden relative">
+
+    <!-- FLOATING BACKGROUND DECORATIONS -->
+    <div id="bg-decor"
+        class="fixed inset-0 pointer-events-none opacity-0 transition-opacity duration-1000 overflow-hidden">
+        <div class="absolute top-[5%] left-[5%] text-5xl animate-float" style="animation-delay: 0s;">🎈</div>
+        <div class="absolute top-[15%] right-[10%] text-4xl animate-float" style="animation-delay: 0.5s;">💕</div>
+        <div class="absolute top-[40%] left-[8%] text-3xl animate-float" style="animation-delay: 1s;">✨</div>
+        <div class="absolute bottom-[30%] right-[5%] text-5xl animate-float" style="animation-delay: 1.5s;">🎂</div>
+        <div class="absolute bottom-[15%] left-[15%] text-4xl animate-float" style="animation-delay: 2s;">🧸</div>
+        <div class="absolute top-[60%] right-[15%] text-3xl animate-float" style="animation-delay: 0.8s;">�</div>
+        <div class="absolute bottom-[5%] right-[30%] text-4xl animate-float" style="animation-delay: 1.2s;">💖</div>
+    </div>
+
+    <!-- Subtle Background Pattern -->
+    <div class="fixed inset-0 dots-pattern opacity-30 pointer-events-none"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="relative w-full max-w-md px-4 mx-auto z-10">
+
+        <!-- HEADER (Initially Hidden) -->
+        <div id="header-section" class="text-center mb-8 opacity-0 transition-all duration-700 transform translate-y-4">
+            <div class="inline-block animate-heart-beat text-5xl mb-2">🎂</div>
+            <h1 class="text-3xl font-bold text-slate-dark font-handwriting">Happy Birthday!</h1>
+            <p class="text-rose text-sm mt-1 font-medium">Pick your gifts inside! �</p>
+        </div>
+
+        <!-- SAFE BOX -->
+        <div id="phase-1" class="transition-all duration-700 w-full">
+
+            <!-- Safe Container -->
+            <div id="safe-container" class="bg-blush p-3 rounded-3xl shadow-xl w-full relative">
+
+                <!-- Inner Safe (Content behind door) -->
+                <div
+                    class="absolute inset-3 bg-slate-dark rounded-2xl overflow-hidden flex flex-col items-center justify-center z-0">
+
+                    <!-- Shelf decorations -->
+                    <div class="absolute bottom-1/3 w-full h-1 bg-slate-mid/50"></div>
+                    <div class="absolute inset-0 bg-black/20"></div>
+
+                    <!-- LOADING TEXT -->
+                    <div id="opening-text" class="text-center hidden absolute z-20">
+                        <div class="text-4xl animate-bounce-slow mb-3">✨</div>
+                        <span class="text-white/90 font-semibold tracking-widest text-sm">กำลังเปิด...</span>
+                    </div>
+
+                    <!-- ITEMS INSIDE SAFE -->
+                    <div id="safe-items" class="w-full h-full relative opacity-0 transition-opacity duration-700 p-4">
+
+                        <!-- Item 1: Letter -->
+                        <div onclick="openModal('letter')"
+                            class="item-card absolute bottom-6 left-4 cursor-pointer z-10" title="Read Letter">
+                            <div
+                                class="w-16 h-20 bg-white rounded-lg shadow-lg flex items-center justify-center transform -rotate-6 hover:rotate-0 transition-transform">
+                                <i data-lucide="mail" class="text-coral w-7 h-7"></i>
+                            </div>
+                            <span
+                                class="absolute -bottom-5 left-0 right-0 text-center text-white/90 text-xs font-medium">Letter</span>
+                        </div>
+
+                        <!-- Item 2: Photo (Center) -->
+                        <div onclick="openModal('photo')"
+                            class="item-card absolute top-6 left-1/2 -translate-x-1/2 cursor-pointer z-20"
+                            title="View Photo">
+                            <div
+                                class="w-20 h-24 bg-white p-2 shadow-lg transform rotate-2 hover:rotate-0 transition-transform rounded">
+                                <div class="w-full h-16 bg-slate-mid rounded overflow-hidden">
+                                    <img src="PP-Photo-9818_Original.jpg" class="w-full h-full object-cover">
+                                </div>
+                                <div class="mt-1.5 h-1.5 w-8 mx-auto bg-blush/50 rounded"></div>
+                            </div>
+                            <span
+                                class="absolute -bottom-5 left-0 right-0 text-center text-white/90 text-xs font-medium">Memories</span>
+                        </div>
+
+                        <!-- Item 3: Snack -->
+                        <div onclick="openModal('snack')"
+                            class="item-card absolute bottom-6 right-4 cursor-pointer z-10 flex flex-col items-center"
+                            title="Eat Snack">
+                            <img src="https://www.blanktag.co/cdn/shop/files/2_5e93fbc0-e32f-4955-b1eb-3781e7c16026.png?v=1689349263&width=1350"
+                                alt="Cookie Monster"
+                                class="w-20 h-auto drop-shadow-lg object-contain transform rotate-6 hover:rotate-0 transition-transform">
+                            <span class="text-center text-white/90 text-xs font-medium mt-1">Snack</span>
+                        </div>
+
+                        <!-- Sparkles -->
+                        <div class="absolute top-3 right-3 text-yellow-300 animate-sparkle text-lg">✨</div>
+                        <div class="absolute bottom-16 left-1/3 text-pink-300 animate-sparkle text-sm"
+                            style="animation-delay: 0.5s;">✨</div>
+                    </div>
+                </div>
+
+                <!-- SAFE DOOR (Swings open, clickable to toggle) -->
+                <div id="safe-door" onclick="toggleDoor()"
+                    class="safe-door bg-white rounded-2xl p-5 relative z-20 shadow-lg cursor-pointer hover:shadow-xl transition-shadow">
+
+                    <!-- Decorative Hinges -->
+                    <div class="absolute -left-1.5 top-12 w-3 h-10 bg-rose/60 rounded-full"></div>
+                    <div class="absolute -left-1.5 bottom-12 w-3 h-10 bg-rose/60 rounded-full"></div>
+
+                    <!-- VIDEO DISPLAY (Scrollable) -->
+                    <div class="w-full bg-slate-dark rounded-xl p-2 shadow-inner mb-5">
+                        <div class="video-frame relative w-full h-44 bg-black rounded-lg overflow-hidden">
+                            <!-- Scrollable video container -->
+                            <div class="w-full h-full overflow-y-auto overflow-x-hidden custom-scroll">
+                                <video class="w-full h-auto" autoplay loop muted playsinline>
+                                    <source src="video-ECr59NI.MP4" type="video/mp4">
+                                </video>
+                            </div>
+                            <!-- Overlay with Lock Status (fixed over viewport) -->
+                            <div id="lock-screen-overlay"
+                                class="absolute inset-0 bg-black/40 flex items-center justify-center transition-all duration-500 pointer-events-none">
+                                <div id="lock-msg"
+                                    class="glass-dark text-white/90 font-mono text-xs px-3 py-1.5 rounded-full flex items-center gap-2">
+                                    <i data-lucide="lock" class="w-3 h-3"></i>
+                                    <span>LOCKED</span>
+                                </div>
+                            </div>
+                            <!-- Scroll hint -->
+                            <div
+                                class="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/50 text-xs animate-bounce pointer-events-none">
+                                <i data-lucide="chevrons-down" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTROL SECTION -->
+                    <div class="flex items-center justify-between gap-4">
+
+                        <!-- Safe Wheel Handle -->
+                        <div class="relative w-20 h-20 flex-shrink-0">
+                            <div id="safe-handle"
+                                class="w-full h-full bg-blush rounded-full shadow-lg flex items-center justify-center transition-transform duration-700 border-4 border-white">
+                                <div
+                                    class="w-14 h-14 bg-white rounded-full shadow-inner flex items-center justify-center">
+                                    <div class="w-3 h-3 bg-rose rounded-full"></div>
+                                </div>
+                                <!-- Spokes -->
+                                <div class="absolute w-1.5 h-full bg-white/80 rounded-full"></div>
+                                <div class="absolute h-1.5 w-full bg-white/80 rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Keypad -->
+                        <div class="flex-1">
+                            <div
+                                class="text-xs text-slate-mid/70 font-semibold tracking-wider uppercase mb-2 text-right">
+                                Security Code</div>
+                            <div class="flex gap-1.5 justify-end">
+                                <!-- Digit slots -->
+                                <div class="flex flex-col items-center">
+                                    <button onclick="changeDigit(0, 1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                                    </button>
+                                    <div class="digit-box w-9 h-11 bg-blush rounded-lg shadow-inner flex items-center justify-center text-xl font-bold text-slate-dark font-mono"
+                                        id="digit-0">0</div>
+                                    <button onclick="changeDigit(0, -1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <button onclick="changeDigit(1, 1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                                    </button>
+                                    <div class="digit-box w-9 h-11 bg-blush rounded-lg shadow-inner flex items-center justify-center text-xl font-bold text-slate-dark font-mono"
+                                        id="digit-1">0</div>
+                                    <button onclick="changeDigit(1, -1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <button onclick="changeDigit(2, 1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                                    </button>
+                                    <div class="digit-box w-9 h-11 bg-blush rounded-lg shadow-inner flex items-center justify-center text-xl font-bold text-slate-dark font-mono"
+                                        id="digit-2">0</div>
+                                    <button onclick="changeDigit(2, -1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <button onclick="changeDigit(3, 1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                                    </button>
+                                    <div class="digit-box w-9 h-11 bg-blush rounded-lg shadow-inner flex items-center justify-center text-xl font-bold text-slate-dark font-mono"
+                                        id="digit-3">0</div>
+                                    <button onclick="changeDigit(3, -1)"
+                                        class="text-rose hover:text-coral active:scale-90 transition p-1">
+                                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Light -->
+                    <div class="flex justify-center mt-4">
+                        <div id="status-light"
+                            class="w-3 h-3 rounded-full bg-coral shadow-lg transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <p id="error-msg" class="mt-4 text-coral text-sm font-medium opacity-0 transition-opacity text-center">
+                Try again, love! 💕
+            </p>
+        </div>
+    </div>
+
+    <!-- MODAL OVERLAY -->
+    <div id="modal-overlay"
+        class="fixed inset-0 bg-slate-dark/70 backdrop-blur-sm z-50 hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+
+        <!-- MODAL CONTAINER -->
+        <div id="modal-container"
+            class="glass w-full max-w-md rounded-3xl shadow-2xl relative transform scale-95 transition-all duration-300 overflow-hidden max-h-[85vh] flex flex-col">
+
+            <!-- Close Button -->
+            <button onclick="closeModal()"
+                class="absolute top-4 right-4 z-10 p-2.5 bg-white/80 rounded-full hover:bg-white transition shadow-md">
+                <i data-lucide="x" class="w-5 h-5 text-slate-dark"></i>
+            </button>
+
+            <!-- Dynamic Content -->
+            <div id="modal-content" class="p-6 overflow-y-auto custom-scroll">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Templates for Modals -->
+    <template id="content-letter">
+        <div class="flex flex-col items-center animate-fade-in-up">
+            <div class="bg-cream p-6 rounded-2xl shadow-md w-full border border-blush/50 relative">
+                <!-- Decorative corner -->
+                <div class="absolute top-0 right-0 w-16 h-16 overflow-hidden">
+                    <div class="absolute top-2 right-2 text-2xl">💌</div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-slate-dark mb-5 font-handwriting">ถึง เบ๊บบู๋ 💕</h3>
+
+                <div class="text-slate-mid text-base font-handwriting space-y-4" style="line-height: 1.8;">
+                    <p>Happy Birthday ยินดีต้อนรับสู่เลข 23 (ล้าน) ปีนะ สิ่งแรกที่อยากบอกยูคือ ยูเก่งมาก ๆ แล้ว
+                        ยูผ่านมาได้จนมาถึงตอนนี้ มันอาจจะมีดีหรือไม่ดีบ้างในชีวิต แต่มันก็ยังไม่ใช่ทั้งชีวิตสักหน่อย
+                        อีเน่า :)</p>
+
+                    <p>อนาคตที่สดใส อนาคตที่ดี ๆ ยังรอยูให้ยูได้เดินไปรับชมรับฟังอยู่ ให้โอกาสตัวเองเยอะ ๆ
+                        อย่ากดดันตัวเองมากเลย ยูมีความสามารถแล้วมาก ๆ อย่าให้เรื่องอื่น ๆ มันมากลบอะไรพวกนี้เลยเนอะ
+                        อีเน่า</p>
+
+                    <p>สุดท้ายก็อยากจะบอกว่า อยู่ด้วยกันไปนาน ๆ นะ ขอให้ได้ไปในที่ ๆ อยากไป ไปเที่ยวด้วยกันบ่อย ๆ
+                        มีเงินใช้ไปด้วยกัน ได้กินอะไรที่อยากกิน แซ่บ ๆ โดยเฉพาะไอ</p>
+
+                    <p>มีความสุขเยอะ ๆ คิดบวกเยอะ ๆ แล้วอะไรดี ๆ มันจะมาหาเองนะ</p>
+
+                    <p class="text-right mt-6 pt-4 border-t border-blush/30">
+                        รักนะ รักที่สุด<br>
+                        <span class="text-coral font-semibold text-lg">บอสสึ 💖</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="content-photo">
+        <div class="flex flex-col items-center justify-center p-2 animate-fade-in-scale">
+            <!-- Photo Gallery -->
+            <div class="relative">
+                <!-- Navigation Arrows -->
+                <button onclick="prevPhoto()"
+                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 z-10 p-2 bg-white/80 rounded-full shadow-lg hover:bg-white transition">
+                    <i data-lucide="chevron-left" class="w-5 h-5 text-slate-dark"></i>
+                </button>
+                <button onclick="nextPhoto()"
+                    class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 z-10 p-2 bg-white/80 rounded-full shadow-lg hover:bg-white transition">
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-slate-dark"></i>
+                </button>
+
+                <!-- Polaroid Frame -->
+                <div id="photo-polaroid" class="polaroid transform transition-transform duration-300">
+                    <div class="aspect-[3/4] w-64 bg-black overflow-hidden rounded-sm">
+                        <img id="gallery-image" src="" alt="Memory"
+                            class="w-full h-full object-cover transition-opacity duration-300">
+                    </div>
+                    <div class="pt-4 text-center font-handwriting">
+                        <p class="text-slate-dark font-bold text-lg">Crazy Memories 💕</p>
+                        <p id="photo-counter" class="text-xs text-slate-mid/60 mt-1">1 / 7</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dots indicator -->
+            <div id="photo-dots" class="flex gap-2 mt-4">
+                <!-- Dots generated by JS -->
+            </div>
+
+            <p class="mt-4 text-center text-slate-mid/70 italic text-sm">"Together in every frame..."</p>
+        </div>
+    </template>
+
+    <template id="content-snack">
+        <div class="flex flex-col items-center justify-center py-8 space-y-6 text-center animate-fade-in-up">
+            <div class="animate-wiggle">
+                <img src="https://www.blanktag.co/cdn/shop/files/2_5e93fbc0-e32f-4955-b1eb-3781e7c16026.png?v=1689349263&width=1350"
+                    alt="Cookie Monster" class="w-44 h-auto drop-shadow-xl">
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-3xl font-bold text-coral font-handwriting">รักนะ อีเน่า 🩷</h3>
+                <p class="text-slate-mid/70 text-sm">(Take a break and eat something yummy!)</p>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- STATE & CONFIG ---
+        const CORRECT_PASS = "0509";
+        let currentDigits = [0, 0, 0, 0];
+        let isLocked = true;
+        let isDoorOpen = false;
+
+        // --- DOOR TOGGLE ---
+        function toggleDoor() {
+            if (isLocked) return; // Can't toggle if still locked
+
+            const door = document.getElementById('safe-door');
+
+            if (isDoorOpen) {
+                // Close door
+                door.classList.remove('animate-door-swing');
+                door.classList.add('animate-door-close');
+                isDoorOpen = false;
+            } else {
+                // Open door
+                door.classList.remove('animate-door-close');
+                door.classList.add('animate-door-swing');
+                isDoorOpen = true;
+            }
+        }
+
+        // --- PHOTO GALLERY CONFIG ---
+        const galleryPhotos = [
+            'IMG_4876.JPG',
+            'IMG_4878.JPG',
+            'IMG_5394.JPG',
+            'IMG_5404.JPG',
+            'IMG_6571.JPG',
+            'IMG_6692.JPG',
+            'PP-Photo-9818_Original.jpg'
+        ];
+        let shuffledPhotos = [];
+        let currentPhotoIndex = 0;
+        const rotations = [-3, -2, -1, 0, 1, 2, 3]; // Random rotation angles
+
+        // Fisher-Yates shuffle
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function initPhotoGallery() {
+            shuffledPhotos = shuffleArray(galleryPhotos);
+            currentPhotoIndex = 0;
+            updatePhotoDisplay();
+            createDots();
+        }
+
+        function updatePhotoDisplay() {
+            const img = document.getElementById('gallery-image');
+            const counter = document.getElementById('photo-counter');
+            const polaroid = document.getElementById('photo-polaroid');
+
+            if (img && shuffledPhotos.length > 0) {
+                // Fade out
+                img.style.opacity = '0';
+
+                setTimeout(() => {
+                    img.src = shuffledPhotos[currentPhotoIndex];
+                    // Random rotation
+                    const rotation = rotations[Math.floor(Math.random() * rotations.length)];
+                    polaroid.style.transform = `rotate(${rotation}deg)`;
+                    // Fade in
+                    img.style.opacity = '1';
+                }, 150);
+
+                if (counter) {
+                    counter.textContent = `${currentPhotoIndex + 1} / ${shuffledPhotos.length}`;
+                }
+                updateDots();
+            }
+        }
+
+        function createDots() {
+            const dotsContainer = document.getElementById('photo-dots');
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+                shuffledPhotos.forEach((_, index) => {
+                    const dot = document.createElement('button');
+                    dot.className = `w-2 h-2 rounded-full transition-all ${index === currentPhotoIndex ? 'bg-coral w-4' : 'bg-slate-mid/30'}`;
+                    dot.onclick = () => goToPhoto(index);
+                    dotsContainer.appendChild(dot);
+                });
+            }
+        }
+
+        function updateDots() {
+            const dotsContainer = document.getElementById('photo-dots');
+            if (dotsContainer) {
+                const dots = dotsContainer.querySelectorAll('button');
+                dots.forEach((dot, index) => {
+                    if (index === currentPhotoIndex) {
+                        dot.className = 'w-4 h-2 rounded-full bg-coral transition-all';
+                    } else {
+                        dot.className = 'w-2 h-2 rounded-full bg-slate-mid/30 transition-all';
+                    }
+                });
+            }
+        }
+
+        function nextPhoto() {
+            currentPhotoIndex = (currentPhotoIndex + 1) % shuffledPhotos.length;
+            updatePhotoDisplay();
+        }
+
+        function prevPhoto() {
+            currentPhotoIndex = (currentPhotoIndex - 1 + shuffledPhotos.length) % shuffledPhotos.length;
+            updatePhotoDisplay();
+        }
+
+        function goToPhoto(index) {
+            currentPhotoIndex = index;
+            updatePhotoDisplay();
+        }
+
+
+        // --- DIGIT CHANGE ---
+        function changeDigit(index, direction) {
+            if (!isLocked) return;
+
+            // Update value (wrap 0-9)
+            let val = currentDigits[index];
+            val += direction;
+            if (val > 9) val = 0;
+            if (val < 0) val = 9;
+            currentDigits[index] = val;
+
+            // Update UI with animation
+            const element = document.getElementById(`digit-${index}`);
+            element.innerText = val;
+            element.classList.add('flip');
+
+            setTimeout(() => {
+                element.classList.remove('flip');
+            }, 150);
+
+            checkPassword();
+        }
+
+        function checkPassword() {
+            const entered = currentDigits.join('');
+            if (entered === CORRECT_PASS) {
+                unlockSafe();
+            }
+        }
+
+        function unlockSafe() {
+            isLocked = false;
+
+            // 1. Handle spin
+            const handle = document.getElementById('safe-handle');
+            handle.classList.add('animate-handle-spin');
+
+            // 2. Status light green
+            const statusLight = document.getElementById('status-light');
+            statusLight.classList.remove('bg-coral');
+            statusLight.classList.add('bg-emerald-400');
+
+            // 3. Update lock screen
+            const screenOverlay = document.getElementById('lock-screen-overlay');
+            const screenText = document.getElementById('lock-msg');
+            screenText.innerHTML = '<i data-lucide="unlock" class="w-3 h-3"></i><span>UNLOCKED</span>';
+            screenOverlay.classList.add('bg-emerald-500/30');
+            screenOverlay.classList.remove('bg-black/40');
+            lucide.createIcons();
+
+            // 4. Confetti & door open
+            setTimeout(() => {
+                triggerConfetti();
+
+                const door = document.getElementById('safe-door');
+                door.classList.add('animate-door-swing');
+                isDoorOpen = true; // Set initial state
+
+                const openingText = document.getElementById('opening-text');
+                openingText.classList.remove('hidden');
+            }, 600);
+
+            // 5. Reveal items & decorations
+            setTimeout(() => {
+                document.getElementById('opening-text').classList.add('hidden');
+                document.getElementById('safe-items').classList.remove('opacity-0');
+
+                // Show header
+                const header = document.getElementById('header-section');
+                header.classList.remove('opacity-0', 'translate-y-4');
+
+                // Show background decor
+                const bgDecor = document.getElementById('bg-decor');
+                bgDecor.classList.remove('opacity-0');
+
+            }, 2200);
+        }
+
+        function triggerConfetti() {
+            const colors = ['#FDA4AF', '#FB7185', '#FFF8F0', '#FFE4E6'];
+            const duration = 4000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.6 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.6 },
+                    colors: colors
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Big burst in center
+            setTimeout(() => {
+                confetti({
+                    particleCount: 80,
+                    spread: 100,
+                    origin: { y: 0.5 },
+                    colors: colors
+                });
+            }, 400);
+        }
+
+        // --- MODALS ---
+        const overlay = document.getElementById('modal-overlay');
+        const container = document.getElementById('modal-container');
+        const contentBox = document.getElementById('modal-content');
+
+        function openModal(type) {
+            const template = document.getElementById(`content-${type}`);
+            if (!template) return;
+
+            contentBox.innerHTML = template.innerHTML;
+            lucide.createIcons();
+
+            // Initialize photo gallery if opening photos
+            if (type === 'photo') {
+                setTimeout(() => {
+                    initPhotoGallery();
+                }, 50);
+            }
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                container.classList.remove('scale-95');
+                container.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            overlay.classList.add('opacity-0');
+            container.classList.remove('scale-100');
+            container.classList.add('scale-95');
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                contentBox.innerHTML = '';
+            }, 300);
+        }
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>
